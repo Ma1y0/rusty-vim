@@ -39,6 +39,10 @@ impl Output {
        self.cursor_controller.move_cursor(direction); 
     }
 
+    fn move_cursor_with_arrows(&mut self, direction: KeyCode) {
+        self.cursor_controller.move_cursor_with_arrows(direction);
+    }
+
     fn draw_rows(&mut self) {
         let screen_rows = self.win_size.1;
         let screen_columns = self.win_size.0;
@@ -108,6 +112,24 @@ impl CursorController {
                 self.cursor_x += 1;
             }
             _ => unimplemented!(),
+        }
+    }
+
+    fn move_cursor_with_arrows(&mut self, direction: KeyCode) {
+        match direction {
+            KeyCode::Up => {
+                self.cursor_y -= 1;
+            }
+            KeyCode::Right => {
+                self.cursor_x += 1;
+            }
+            KeyCode::Down => {
+                self.cursor_y += 1;
+            }
+            KeyCode::Left => {
+                self.cursor_x -= 1;
+            }
+            _ => unimplemented!()
         }
     }
 
@@ -188,13 +210,18 @@ impl Editor {
                 code: KeyCode::Char(val),
                 modifiers: event::KeyModifiers::NONE,
                 ..
-            }  => {
+            } => {
                 match val {
                     'h'| 'j'|'k'|'l' => self.output.move_cursor(val),
-                    _=> {}
+                    _ => {}
                 }
                 
             },
+            KeyEvent {
+                code: direction @ (KeyCode::Up | KeyCode::Down | KeyCode::Left | KeyCode::Right),
+                modifiers: event::KeyModifiers::NONE,
+                ..
+            } => self.output.move_cursor_with_arrows(direction),
             _ => {}
         }
         Ok(true)
