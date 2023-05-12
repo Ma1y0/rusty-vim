@@ -1,4 +1,4 @@
-use std::io::{self, Read, stdout, Write};
+use std::io::{self, stdout, Write};
 use std::time::Duration;
 use crossterm::{ event, terminal, execute, cursor, queue };
 use crossterm::event::{ Event, KeyCode, KeyEvent };
@@ -184,7 +184,6 @@ impl Editor {
                 modifiers: event::KeyModifiers::CONTROL,
                 ..
             } => return Ok(false),
-            /* note the following*/
             KeyEvent {
                 code: KeyCode::Char(val),
                 modifiers: event::KeyModifiers::NONE,
@@ -192,11 +191,10 @@ impl Editor {
             }  => {
                 match val {
                     'h'| 'j'|'k'|'l' => self.output.move_cursor(val),
-                    _=> {/*do nothing*/}
+                    _=> {}
                 }
                 
             },
-            // end
             _ => {}
         }
         Ok(true)
